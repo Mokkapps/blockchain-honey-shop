@@ -1,3 +1,5 @@
+**IMPORTANT: This is still WIP. I will link to the Web3 app as soon as it is ready.**
+
 # Blockchain Honey Shop
 
 <img src="https://cdn.pixabay.com/photo/2015/06/27/16/35/honey-823614_1280.jpg" width="250">
