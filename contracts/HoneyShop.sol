@@ -1,6 +1,5 @@
 pragma solidity ^0.4.2;
 
-import "./HoneyShopPremium.sol";
 import "./Ownable.sol";
 
 /**
@@ -13,6 +12,7 @@ contract HoneyShop is Ownable {
 	uint productCount = 0;
 	address treasuryAddress;
 	address owner;
+	uint premiumDuration = 30 minutes;
 
 	event NewProduct(string name, uint price);
 	event NewBuy(string name, uint price);
@@ -30,8 +30,7 @@ contract HoneyShop is Ownable {
 	}
 
 	mapping(uint => Product) products;
-
-	HoneyShopPremium premiumShop = HoneyShopPremium(0x277aD07109FE52a742B808a3E6765Ee1Ad0e7Ad2);
+    mapping (address => uint) premiumMembers;
 
 	function HoneyShop (string _name) public {
 		owner = msg.sender;
@@ -68,7 +67,7 @@ contract HoneyShop is Ownable {
 	function purchase(uint _id) public payable {
 		Product memory p = products[_id];
 
-		if (premiumShop.isPremium(msg.sender)) {
+		if (isPremium(msg.sender)) {
 			IsPremium(msg.sender, true);
 			p.price = (p.price * 5) / 100;
 		} else {
@@ -79,6 +78,17 @@ contract HoneyShop is Ownable {
 
 		NewBuy(p.name, p.price);
 		msg.sender.transfer(msg.value - p.price);
+	}
+
+	function subscribePremium() public payable {
+		if (msg.value >= 100 finney) {
+			premiumMembers[msg.sender] = now;
+			msg.sender.transfer(msg.value - 100 finney);
+		}
+	}
+
+	function isPremium(address _address) constant public returns (bool) {
+		return (now - premiumMembers[_address]) < premiumDuration;
 	}
 
 	function cashout() public ownerOnly {
