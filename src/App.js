@@ -33,7 +33,7 @@ class App extends Component {
       .catch(() => {
         console.error('Error finding web3.');
         alert('Error finding web3.');
-      })
+      });
   }
 
   instantiateContract() {
@@ -58,8 +58,8 @@ class App extends Component {
         return honeyShopInstance.isOpen();
       }).then((result) => {
         return this.setState({ isOpen: result });
-      })
-    })
+      });
+    });
   }
 
   render() {
