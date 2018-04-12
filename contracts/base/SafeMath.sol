@@ -1,4 +1,4 @@
-pragma solidity ^0.4.12;
+pragma solidity ^0.4.21;
 
 // Safe mathematical operations contract
 contract SafeMath {
