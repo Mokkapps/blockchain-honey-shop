@@ -8,7 +8,7 @@ contract SafeMath {
     @param y uint256 Second operand
     @return z Result
   */
-  function safeSub(uint256 x, uint256 y) internal returns (uint256) {
+  function safeSub(uint256 x, uint256 y) internal pure returns (uint256) {
     assert(y <= x);
     return x - y;
   }
@@ -19,7 +19,7 @@ contract SafeMath {
     @param y uint256 Second operand
     @return uint256 Result
   */
-  function safeAdd(uint256 x, uint256 y) internal returns (uint256) {
+  function safeAdd(uint256 x, uint256 y) internal pure returns (uint256) {
     uint256 z = x + y;
     assert(z >= x);
     return z;
@@ -30,7 +30,7 @@ contract SafeMath {
     @param y uint256 Second operand
     @return z uint256 Result
   */
-  function safeMul(uint256 x, uint256 y) internal returns (uint256) {
+  function safeMul(uint256 x, uint256 y) internal pure returns (uint256) {
     uint256 z = x * y;
     assert(x == 0 || z / x == y);
     return z;
@@ -41,7 +41,7 @@ contract SafeMath {
     @param y uint256 Second operand
     @return z uint256 Result
   */
-  function safeDiv(uint256 x, uint256 y) internal returns (uint256) {
+  function safeDiv(uint256 x, uint256 y) internal pure returns (uint256) {
     uint256 z = x / y;
     return z;
   }

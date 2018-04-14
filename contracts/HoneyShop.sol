@@ -12,7 +12,7 @@ import "./base/SafeMath.sol";
 contract HoneyShop is Owned, SafeMath {
 
   /* Store internals */
-  bytes32 public store_name;
+  string public store_name;
   uint256 private store_balance;
 
   mapping (address => Customer) customers;
@@ -60,7 +60,7 @@ contract HoneyShop is Owned, SafeMath {
     owner = msg.sender;
     store_name = "Hoffmann's Honey Shop";
     store_balance = 0;
-    if (this.balance > 0) revert();
+    if (address(this).balance > 0) revert();
   }
   
   /**
@@ -80,7 +80,7 @@ contract HoneyShop is Owned, SafeMath {
     @return success
    */
   function registerProduct(uint256 id, bytes32 name, bytes32 description, uint256 price, uint256 default_amount) public onlyOwner returns (bool success) {
-    var product = Product(id, name, description, price, default_amount);
+    Product memory product = Product(id, name, description, price, default_amount);
     if (checkProductValidity(product)) {
       products[id] = product;
       emit ProductRegistered(id);
@@ -96,7 +96,7 @@ contract HoneyShop is Owned, SafeMath {
     @return success
   */
   function deregisterProduct(uint256 id) public onlyOwner returns (bool success) {
-    Product product = products[id];
+    Product storage product = products[id];
     if (product.id == id) {
       delete products[id];
       emit ProductDeregistered(id);
@@ -132,7 +132,7 @@ contract HoneyShop is Owned, SafeMath {
     @return success
   */
   function deregisterCustomer(address _address) public onlyOwner returns (bool success) {
-    Customer customer = customers[_address];
+    Customer storage customer = customers[_address];
     if (customer.adr != address(0)) {
       delete customers[_address];
       emit CustomerDeregistered(_address);
@@ -152,8 +152,8 @@ contract HoneyShop is Owned, SafeMath {
     @return (success, pos_in_prod_mapping)
   */
   function insertProductIntoCart(uint256 id) public returns (bool success, uint256 pos_in_prod_mapping) {
-    Customer cust = customers[msg.sender];
-    Product prod = products[id];
+    Customer storage cust = customers[msg.sender];
+    Product storage prod = products[id];
     uint256 prods_prev_len = cust.cart.products.length;
     cust.cart.products.push(prod.id);
     uint256 current_sum = cust.cart.completeSum;
@@ -174,7 +174,7 @@ contract HoneyShop is Owned, SafeMath {
   */
   function removeProductFromCart(uint256 prod_pos_in_mapping) public {
     uint256[] memory new_product_list = new uint256[](customers[msg.sender].cart.products.length - 1);
-    var customerProds = customers[msg.sender].cart.products;
+    uint256[] memory customerProds = customers[msg.sender].cart.products;
     for (uint256 i = 0; i < customerProds.length; i++) {
       if (i != prod_pos_in_mapping) {
         new_product_list[i] = customerProds[i];
@@ -192,7 +192,7 @@ contract HoneyShop is Owned, SafeMath {
     @return success
   */
   function checkoutCart() public returns (bool success) {
-    Customer customer = customers[msg.sender];
+    Customer storage customer = customers[msg.sender];
     uint256 paymentSum = customer.cart.completeSum;
     if ((customer.balance >= paymentSum) && customer.cart.products.length > 0) {
       customer.balance -= paymentSum;
@@ -210,9 +210,10 @@ contract HoneyShop is Owned, SafeMath {
     @return success
   */
   function emptyCart() public returns (bool success) {
-    Customer customer = customers[msg.sender];
+    Customer storage customer = customers[msg.sender];
     customer.cart = Cart(new uint256[](0), 0);
     emit CartEmptied(customer.adr);
+    return true;
   }
 
   /**
@@ -220,12 +221,9 @@ contract HoneyShop is Owned, SafeMath {
     @param new_store_name New store name
     @return success
   */
-  function renameStoreTo(bytes32 new_store_name) public onlyOwner returns (bool success) {
-    if (new_store_name.length != 0 && new_store_name.length <= 32) {
-      store_name = new_store_name;
-      return true;
-    }
-    return false;
+  function renameStoreTo(string new_store_name) public onlyOwner returns (bool success) {
+    store_name = new_store_name;
+    return true;
   }
 
   /**
@@ -243,7 +241,7 @@ contract HoneyShop is Owned, SafeMath {
     @return (product_ids, complete_sum)
   */
   function getCart() public constant returns (uint256[] memory product_ids, uint256 complete_sum) {
-    Customer customer = customers[msg.sender];
+    Customer storage customer = customers[msg.sender];
     uint256 len = customer.cart.products.length;
     uint256[] memory ids = new uint256[](len);
     for (uint256 i = 0; i < len; i++) {
@@ -273,7 +271,7 @@ contract HoneyShop is Owned, SafeMath {
     @param product Product struct
     @return valid
   */
-  function checkProductValidity(Product product) private returns (bool valid) {
+  function checkProductValidity(Product product) internal pure returns (bool valid) {
     return (product.price > 0);
   }
 
