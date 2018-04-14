@@ -16,12 +16,12 @@ contract Owned {
 
   /**
     Changes the address of the store owner
-    @param new_owner Address of the new owner
+    @param newOwner Address of the new owner
   */
-  function transferOwnership(address new_owner) public onlyOwner {
-    if (new_owner != address(0) &&
-        new_owner != owner) {
-      owner = new_owner;
+  function transferOwnership(address newOwner) public onlyOwner {
+    if (newOwner != address(0) &&
+        newOwner != owner) {
+      owner = newOwner;
     }
   }
 

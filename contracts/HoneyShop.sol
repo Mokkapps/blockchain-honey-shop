@@ -12,8 +12,8 @@ import "./base/SafeMath.sol";
 contract HoneyShop is Owned, SafeMath {
 
   /* Store internals */
-  string public store_name;
-  uint256 private store_balance;
+  string public storeName;
+  uint256 private storeBalance;
 
   mapping (address => Customer) customers;
   mapping (uint256 => Product) products;
@@ -53,13 +53,13 @@ contract HoneyShop is Owned, SafeMath {
     bytes32 name;
     bytes32 description;
     uint256 price;
-    uint256 default_amount;
+    uint256 defaultAmount;
   }
 
   function HoneyShop() public {
     owner = msg.sender;
-    store_name = "Hoffmann's Honey Shop";
-    store_balance = 0;
+    storeName = "Hoffmann's Honey Shop";
+    storeBalance = 0;
     if (address(this).balance > 0) revert();
   }
   
@@ -76,11 +76,11 @@ contract HoneyShop is Owned, SafeMath {
     @param name Product Name
     @param description Product Description
     @param price Product Price
-    @param default_amount Default amount of items in a single product
+    @param defaultAmount Default amount of items in a single product
     @return success
    */
-  function registerProduct(uint256 id, bytes32 name, bytes32 description, uint256 price, uint256 default_amount) public onlyOwner returns (bool success) {
-    Product memory product = Product(id, name, description, price, default_amount);
+  function registerProduct(uint256 id, bytes32 name, bytes32 description, uint256 price, uint256 defaultAmount) public onlyOwner returns (bool success) {
+    Product memory product = Product(id, name, description, price, defaultAmount);
     if (checkProductValidity(product)) {
       products[id] = product;
       emit ProductRegistered(id);
@@ -149,17 +149,17 @@ contract HoneyShop is Owned, SafeMath {
     The positional information can later be used to directly reference
     the product within the mapping. Solidity mappings aren't iterable.
     @param id Product ID
-    @return (success, pos_in_prod_mapping)
+    @return (success, posInProductMapping)
   */
-  function insertProductIntoCart(uint256 id) public returns (bool success, uint256 pos_in_prod_mapping) {
+  function insertProductIntoCart(uint256 id) public returns (bool success, uint256 posInProductMapping) {
     Customer storage cust = customers[msg.sender];
     Product storage prod = products[id];
-    uint256 prods_prev_len = cust.cart.products.length;
+    uint256 prodsPrevLength = cust.cart.products.length;
     cust.cart.products.push(prod.id);
-    uint256 current_sum = cust.cart.completeSum;
-    cust.cart.completeSum = safeAdd(current_sum, prod.price);
+    uint256 currentSum = cust.cart.completeSum;
+    cust.cart.completeSum = safeAdd(currentSum, prod.price);
 
-    if (cust.cart.products.length > prods_prev_len) {
+    if (cust.cart.products.length > prodsPrevLength) {
       emit CartProductInserted(msg.sender, id, prod.price, cust.cart.completeSum);
       return (true, cust.cart.products.length - 1);
     }
@@ -170,20 +170,20 @@ contract HoneyShop is Owned, SafeMath {
 
   /**
     Removes a product entry from the shopping cart
-    @param prod_pos_in_mapping Product's position in the internal mapping
+    @param prodPosInMapping Product's position in the internal mapping
   */
-  function removeProductFromCart(uint256 prod_pos_in_mapping) public {
-    uint256[] memory new_product_list = new uint256[](customers[msg.sender].cart.products.length - 1);
+  function removeProductFromCart(uint256 prodPosInMapping) public {
+    uint256[] memory newProductList = new uint256[](customers[msg.sender].cart.products.length - 1);
     uint256[] memory customerProds = customers[msg.sender].cart.products;
     for (uint256 i = 0; i < customerProds.length; i++) {
-      if (i != prod_pos_in_mapping) {
-        new_product_list[i] = customerProds[i];
+      if (i != prodPosInMapping) {
+        newProductList[i] = customerProds[i];
       } else {
         customers[msg.sender].cart.completeSum -= products[customerProds[i]].price;
         emit CartProductRemoved(msg.sender, customerProds[i]);
       }
     }
-    customers[msg.sender].cart.products = new_product_list;
+    customers[msg.sender].cart.products = newProductList;
   }
 
   /**
@@ -197,7 +197,7 @@ contract HoneyShop is Owned, SafeMath {
     if ((customer.balance >= paymentSum) && customer.cart.products.length > 0) {
       customer.balance -= paymentSum;
       customer.cart = Cart(new uint256[](0), 0);
-      store_balance += paymentSum;
+      storeBalance += paymentSum;
       emit CartCheckoutCompleted(msg.sender, paymentSum);
       return true;
     }
@@ -218,21 +218,21 @@ contract HoneyShop is Owned, SafeMath {
 
   /**
     Changes the name of the store
-    @param new_store_name New store name
+    @param newStoreName New store name
     @return success
   */
-  function renameStoreTo(string new_store_name) public onlyOwner returns (bool success) {
-    store_name = new_store_name;
+  function renameStoreTo(string newStoreName) public onlyOwner returns (bool success) {
+    storeName = newStoreName;
     return true;
   }
 
   /**
     Returns a elements describing a product
     @param id Product ID
-    @return (name, description, price, default_amount)
+    @return (name, description, price, defaultAmount)
   */
-  function getProduct(uint256 id) public constant returns (bytes32 name, bytes32 description, uint256 price, uint256 default_amount) {
-    return (products[id].name, products[id].description, products[id].price, products[id].default_amount);
+  function getProduct(uint256 id) public constant returns (bytes32 name, bytes32 description, uint256 price, uint256 defaultAmount) {
+    return (products[id].name, products[id].description, products[id].price, products[id].defaultAmount);
   }
   
   /**
@@ -240,7 +240,7 @@ contract HoneyShop is Owned, SafeMath {
     The caller address must be a registered customer.
     @return (product_ids, complete_sum)
   */
-  function getCart() public constant returns (uint256[] memory product_ids, uint256 complete_sum) {
+  function getCart() public constant returns (uint256[] memory productIds, uint256 completeSum) {
     Customer storage customer = customers[msg.sender];
     uint256 len = customer.cart.products.length;
     uint256[] memory ids = new uint256[](len);
@@ -260,10 +260,10 @@ contract HoneyShop is Owned, SafeMath {
 
   /**
     Returns stores's own balance
-    @return store_balance Store's current balance
+    @return storeBalance Store's current balance
   */
   function getStoreBalance() public onlyOwner constant returns (uint256) {
-    return store_balance;
+    return storeBalance;
   }
 
   /**
