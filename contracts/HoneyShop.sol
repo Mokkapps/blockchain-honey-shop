@@ -17,6 +17,7 @@ contract HoneyShop is Owned, SafeMath {
 
   mapping (address => Customer) customers;
   mapping (uint256 => Product) products;
+  uint256[] public productIdList;
 
   /* Store Events */
   event CustomerRegistered(address customer);
@@ -83,11 +84,20 @@ contract HoneyShop is Owned, SafeMath {
     Product memory product = Product(id, name, description, price, defaultAmount);
     if (checkProductValidity(product)) {
       products[id] = product;
+      productIdList.push(id);
       emit ProductRegistered(id);
       return true;
     }
     emit ProductRegistrationFailed(id);
     return false;
+  }
+
+  /**
+    Returns the amount of registered products
+    @return count
+  */
+  function getProductsCount() public constant returns(uint count) {
+    return productIdList.length;
   }
 
   /**
