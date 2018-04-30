@@ -13,9 +13,9 @@ Bootstrapped with [React Truffle Box](http://truffleframework.com/boxes/react).
 
 1. Clone repo and install dependencies
 
-    ```javascript
-    npm install
-    ```
+```javascript
+npm install
+```
 
 2. Open [Ganache](http://truffleframework.com/ganache/)
 
@@ -26,7 +26,7 @@ truffle compile
 ```
 
 ```javascript
-truffle migrate
+truffle migrate --network ganache
 ```
 4. Run web app
 
@@ -37,6 +37,14 @@ npm run start
 5. Open web app. Make sure that your browser uses the [MetaMask browser extension](http://truffleframework.com/docs/advanced/truffle-with-metamask).
 
 6. Interact from the web with your smart contract on the blockchain.
+
+# Contract tests
+
+1. Repeat steps 1-3 from above
+2. Run the tests
+```javascript
+truffle test --network ganache
+```
 
 # More documentation
 

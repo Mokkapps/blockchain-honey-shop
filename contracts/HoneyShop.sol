@@ -1,4 +1,4 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 import "./base/Owned.sol";
 import "./base/SafeMath.sol";
@@ -56,7 +56,7 @@ contract HoneyShop is Owned, SafeMath {
     uint256 defaultAmount;
   }
 
-  function HoneyShop() public {
+  constructor() public {
     owner = msg.sender;
     storeName = "Hoffmann's Honey Shop";
     storeBalance = 0;

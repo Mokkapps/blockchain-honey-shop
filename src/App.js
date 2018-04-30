@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import HoneyShopContract from '../build/contracts/HoneyShop.json';
 import getWeb3 from './utils/getWeb3';
 
@@ -7,7 +7,7 @@ import './css/open-sans.css';
 import './css/pure-min.css';
 import './App.css';
 
-class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
 
@@ -53,12 +53,15 @@ class App extends Component {
 
     // Get open status.
     this.state.web3.eth.getAccounts((error, accounts) => {
-      honeyShop.deployed().then((instance) => {
-        honeyShopInstance = instance;
-        return honeyShopInstance.isOpen();
-      }).then((result) => {
-        return this.setState({ isOpen: result });
-      });
+      honeyShop
+        .deployed()
+        .then(instance => {
+          honeyShopInstance = instance;
+          return honeyShopInstance.isOpen();
+        })
+        .then(result => {
+          return this.setState({ isOpen: result });
+        });
     });
   }
 
@@ -66,7 +69,9 @@ class App extends Component {
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
-          <a href="#" className="pure-menu-heading pure-menu-link">Truffle Box</a>
+          <a href="#" className="pure-menu-heading pure-menu-link">
+            Truffle Box
+          </a>
         </nav>
 
         <main className="container">

@@ -1,11 +1,11 @@
-pragma solidity ^0.4.21;
+pragma solidity ^0.4.23;
 
 // Contract for maintaining ownership
 contract Owned {
   address public owner;
 
   // Default constructor
-  function Owned() public {
+  constructor() public {
     owner = msg.sender;
   }
 
