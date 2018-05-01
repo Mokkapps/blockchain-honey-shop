@@ -36,13 +36,21 @@ const NavBarLink = styled.a`
   }
 `;
 
-const Header = ({ name, cartCount }) => (
-  <NavBar className="pure-menu pure-menu-horizontal">
-    <NavBarLink href="#" className="pure-menu-heading pure-menu-link">
-      {name}
-    </NavBarLink>
-    <ShoppingCart count={cartCount || 0} />
-  </NavBar>
-);
+const Header = ({ name, cart }) => {
+  const count = Object.values(cart)
+    .map(c => c.amount)
+    .reduce((accumulator, currentValue) => {
+      return accumulator + currentValue;
+    }, 0);
+
+  return (
+    <NavBar className="pure-menu pure-menu-horizontal">
+      <NavBarLink href="/" className="pure-menu-heading pure-menu-link">
+        {name}
+      </NavBarLink>
+      <ShoppingCart count={count} />
+    </NavBar>
+  );
+};
 
 export default Header;

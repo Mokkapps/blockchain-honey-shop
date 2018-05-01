@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,10 +20,12 @@ const Count = styled.span`
 `;
 
 const ShoppingCart = ({ count }) => (
-  <Wrapper>
-    <Image src="./shopping-cart.png" alt="Checkout" />
-    <Count>{count || 0}</Count>
-  </Wrapper>
+  <Link to="/cart">
+    <Wrapper>
+      <Image src="./shopping-cart.png" alt="Checkout" />
+      <Count>{count || 0}</Count>
+    </Wrapper>
+  </Link>
 );
 
 export default ShoppingCart;

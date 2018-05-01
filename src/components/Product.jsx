@@ -30,13 +30,13 @@ const Button = styled.button`
   align-self: center;
 `;
 
-const Product = ({ index, image, name, desc, price, defaultAmount, addToOrder }) => (
+const Product = ({ index, image, name, desc, price, defaultAmount, addToCart }) => (
   <Wrapper>
     <Image src={image} alt={name} />
     <Name>{name}</Name>
     <Price>Price: {price}</Price>
     <Desc>Description: {desc}</Desc>
-    <Button onClick={() => addToOrder(index)}>Add To Cart</Button>
+    <Button onClick={() => addToCart(index)}>Add To Cart</Button>
   </Wrapper>
 );
 
