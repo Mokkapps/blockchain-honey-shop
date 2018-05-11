@@ -16,7 +16,7 @@ const ProductList = styled.ul`
 
 const Inventory = ({ products, addToCart }) => {
   const productList = products.map(product => (
-    <Product key={product.id} index={product.id} {...product} addToCart={addToCart} />
+    <Product key={product.id} product={product} addToCart={addToCart} />
   ));
   return (
     <div>
