@@ -1,4 +1,4 @@
-**IMPORTANT: This is just a fun project and still work in progress. I will link to the Web3 app as soon as it is ready.**
+**IMPORTANT: This was a fun project which was never finished and is no longer in development**
 
 # Blockchain Honey Shop
 
